@@ -4,22 +4,40 @@ class Solution(object):
         :type nums: List[int]
         :rtype: List[int]
         """
-        print(nums)
+        # 1. Sort
+        if not nums:
+            return []
+
         arr = self.sort(nums)
-        print(arr)
-        dict_divisible = {}
-        max_arr = []
-        for i in range(len(arr)):
-            dict_divisible[arr[i]] = []
-            for j in range(i+1, len(arr)):
-                if arr[j] % arr[i] == 0:
-                    dict_divisible[arr[i]].append(arr[j])    
-                continue   
+        n = len(arr)
+
+        # 2. dp[i] = length of largest divisible subset that ends at i
+        dp = [1] * n
+        parent = [-1] * n # parent[i] = index of previois element in the subset at i
+
+        max_len = 1
+        max_idx = 0
+
+        # 3. Compute dp
+        for i in range(n):
+            for j in range(i):
+                if arr[i] % arr[j] == 0:
+                    # if extend subset ending at j gives longer subset ending at i
+                    if dp[j] + 1 > dp[i]:        
+                        dp[i] = dp[j] + 1
+                        parent[i] = j
+                
+            # trach the overall maximum:
+            if dp[i] > max_len:
+                max_len = dp[i]
+                max_idx = i
+        res = []
+        cur = max_idx
+        while cur != -1:
+            res.append(arr[cur])
+            cur = parent[cur]
         
-        for key in dict_divisible:
-            arr = [key]
-            for 
-            
+        return res
 
 
     def sort(self, nums):
@@ -41,7 +59,7 @@ class Solution(object):
                 i += 1
             else: 
                 result.append(right[j])
-                j -= 1
+                j += 1
 
         result.extend(left[i:])
         result.extend(right[j:])
